@@ -26,7 +26,7 @@ jobs:
       - name: check out code
         uses: actions/checkout@4
       - name: Set up Python
-        uses: actions/setup-python@5
+        uses: actions/setup-python@4
         with:
           python-version: 3.8
       - name: Install Libraries
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: create a release
-        uses: actions/create-release@v2
+        uses: actions/create-release@v4
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
