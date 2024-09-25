@@ -2,7 +2,6 @@ name: Deploy my Lambda Function
 on: [push]
 
 jobs:
-
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -20,8 +19,7 @@ jobs:
             # Select identifies which errors should cause the job to fail
             flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
             # The exit zero flag will show errors as warnings and not fail the run
-            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-            
+            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics  
   build:
     runs-on: ubuntu-latest
     steps:
@@ -44,8 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with: 
           name: zipped-bundle
-          path: ${{ github.sha }}.zip
-          
+          path: ${{ github.sha }}.zip  
   publish:
     runs-on: ubuntu-latest
     steps:
