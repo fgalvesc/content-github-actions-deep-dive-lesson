@@ -1,11 +1,27 @@
 name: Deploy my Lambda Function
-
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install Libraries
+        run: pip install flake8
+      - name: Lint with flake8
+        run: |
+            cd function
+            # Select identifies which errors should cause the job to fail
+            flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            # The exit zero flag will show errors as warnings and not fail the run
+            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+            
   build:
     runs-on: ubuntu-latest
     steps:
@@ -14,7 +30,7 @@ jobs:
       - name: Step up python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.12
       - name: Install Libraries
         run: |
             cd function
@@ -29,4 +45,21 @@ jobs:
         with: 
           name: zipped-bundle
           path: ${{ github.sha }}.zip
+          
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: create release
+        uses: actions/create-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release from ${{ github.run_number }}
+          body: New release for ${{ github.sha }}. Release notes on the documentation site
+          draft: false
+          prerelease: false
+          
+          
+    
      
